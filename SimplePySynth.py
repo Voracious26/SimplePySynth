@@ -1,5 +1,7 @@
 import numpy as np
 import simpleaudio as sa
+from envelope import envelope
+from tkinter import Tk, Canvas
 
 fs = 44100  # 44100 samples per second
 
@@ -59,6 +61,42 @@ def playNote(wavetype, frequency, seconds, attack, decay, sustain, release):
 
 notes = [440, 880, 440, 220]
 
+root = Tk()
+paint = Canvas(root)  
+volumeEnvelope = envelope(paint)
+
+
+def drawEverything():
+    global volumeEnvelope
+    volumeEnvelope.draw()
+
+def key(event):
+    repr(event.char)
+    
+def callback(event):
+    global volumeEnvelope
+    drawEverything()
+    volumeEnvelope.clickedD(event)
+
+def moving(event):
+    global volumeEnvelope
+    drawEverything()
+    volumeEnvelope.movingD(event)
+
+def released(event):
+    global volumeEnvelope
+    drawEverything()
+    volumeEnvelope.releasedD(event)
+
+paint.bind("<Key>", key)
+paint.bind("<Button-1>", callback)
+paint.bind("<ButtonRelease-1>", released)
+paint.bind("<B1-Motion>", moving)
+paint.pack()
+
 while True:
     for j in notes:
+        drawEverything()
+        root.update()
         playNote("saw", j, 1, 0.5, 0.5, 1, 0.5)
+    
