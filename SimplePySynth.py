@@ -100,10 +100,12 @@ def GUIupdate():
         drawEverything()
         root.update()
         
-def playNotes():     
-    for j in notes:
-        playNote("saw", j, 1, 0.5, 0.5, 1, 0.5)
-        
+def playNotes():
+    for k in range(0, 5):
+        for j in notes:
+            #playNote("saw", j, 1, 0.5, 0.5, 1, 0.5)
+            playNote("saw", j, 1, volumeEnvelope.currentA, volumeEnvelope.currentD, volumeEnvelope.currentS, volumeEnvelope.currentR)
+            
 while True:
     t2 = threading.Thread(target=playNotes, args=()) 
     t2.start()
