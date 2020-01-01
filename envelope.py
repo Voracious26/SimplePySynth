@@ -13,7 +13,17 @@ class envelope:
         B = (attack + decay) * fs
         C = seconds * fs
         D = (seconds + release) * fs
+        
+        self.initialA = attack
+        self.initialD = decay
+        self.initialS = sustain
+        self.initialR = release
 
+        self.currentA = attack
+        self.currentD = decay
+        self.currentS = sustain
+        self.currentR = release
+        
         #multiplier literally just so we can fit in in the canvas
         self.m = 100
         
@@ -59,6 +69,12 @@ class envelope:
         self.canvas.itemconfig(self.decayD, text="Decay: "+str(self.points[2].valueX))
         self.canvas.itemconfig(self.sustainD, text="Sustain: "+str(self.points[2].valueY))
         self.canvas.itemconfig(self.releaseD, text="Release: "+str(self.points[4].valueX))
+        
+        self.currentA = ((self.points[1].valueX + 100)/200) * self.initialA
+        self.currentD = ((self.points[2].valueX + 100)/200) * self.initialD
+        self.currentS = ((self.points[2].valueY + 100)/200) * self.initialS
+        self.currentR = ((self.points[4].valueX + 100)/200) * self.initialR
+        
         self.canvas.coords(self.lines[0], self.points[0].x, self.points[0].y, self.points[1].x, self.points[1].y)
         for d in range(1, len(self.points)-1):
             self.canvas.coords(self.lines[d], self.points[d].x, self.points[d].y, self.points[d+1].x, self.points[d+1].y)
