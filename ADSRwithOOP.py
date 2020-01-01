@@ -1,17 +1,12 @@
 from tkinter import Tk, Canvas
 import math
 
-
-root = Tk()
-paint = Canvas(root)
-width = int(paint.cget("width"))
-height = int(paint.cget("height"))
-
 def distance(x1, y1, x2, y2):
     return math.sqrt(((x2-x1)**2)+((y2-y1)**2))
 
 class draggable:
-    def __init__(self, x, y, size, dirDrag, rangeValueX, rangeValueY, valueX, valueY, rangeX, rangeY):
+    def __init__(self, canvas, x, y, size, dirDrag, rangeValueX, rangeValueY, valueX, valueY, rangeX, rangeY):
+        self.canvas = canvas
         # x and y will store current position, xBase and yBase will store initial
         self.x = x
         self.y = y
@@ -19,6 +14,9 @@ class draggable:
         self.rangeY = rangeY
         self.xBase = x
         self.yBase = y
+        # width = int(paint.cget("width"))
+        #height = int(paint.cget("height"))
+
         
         # int (20 recommended)
         self.size = size
@@ -39,7 +37,7 @@ class draggable:
         #is this object being dragged right now
         self.dragging = False
         
-        self.circle = paint.create_oval(0, 0, 0, 0)
+        self.circle = canvas.create_oval(0, 0, 0, 0)
 
     def updateValue(self, valueX, valueY):
         # update both self.position and self.value
@@ -83,10 +81,11 @@ class draggable:
         self.dragging = False
         
     def drawD(self):
-        paint.coords(self.circle, self.x-self.size, self.y-self.size, self.x+self.size, self.y+self.size)
+        self.canvas.coords(self.circle, self.x-self.size, self.y-self.size, self.x+self.size, self.y+self.size)
 
 class envelope:
-    def __init__(self):        
+    def __init__(self, canvas):
+        self.canvas = canvas
         self.fs = 2
         self.seconds = 1
         self.attack = 0.5
@@ -103,11 +102,14 @@ class envelope:
 
         self.draggables = []
         self.s = 10
-        self.draggables.append(draggable(20, self.base, self.s, "", 0, 0, 0, 0, 0, 0))
-        self.draggables.append(draggable(self.A*self.m, 15, self.s, "x", 100, 0, 0, 0, 50, 0))
-        self.draggables.append(draggable(self.B*self.m, self.sustain*self.m, self.s, "xy", 100, 100, 0, 0, 50, height-self.s))
-        self.draggables.append(draggable(self.C*self.m, self.sustain*self.m, self.s, "y", 0, 100, 0, 0, 0, 50))
-        self.draggables.append(draggable(self.D*self.m, self.base, self.s, "x", 100, 0, 0, 0, 50, 0))
+        
+        height = int(self.canvas.cget("height"))
+
+        self.draggables.append(draggable(canvas, 20, self.base, self.s, "", 0, 0, 0, 0, 0, 0))
+        self.draggables.append(draggable(canvas, self.A*self.m, 15, self.s, "x", 100, 0, 0, 0, 50, 0))
+        self.draggables.append(draggable(canvas, self.B*self.m, self.sustain*self.m, self.s, "xy", 100, 100, 0, 0, 50, height-self.s))
+        self.draggables.append(draggable(canvas, self.C*self.m, self.sustain*self.m, self.s, "y", 0, 100, 0, 0, 0, 50))
+        self.draggables.append(draggable(canvas, self.D*self.m, self.base, self.s, "x", 100, 0, 0, 0, 50, 0))
 
         # 0 Base (Z)
         # 1 A
@@ -121,27 +123,27 @@ class envelope:
 
 
         self.lines = []
-        self.lines.append(paint.create_line(self.draggables[0].x, self.draggables[0].y, self.draggables[1].x, self.draggables[1].y))
+        self.lines.append(canvas.create_line(self.draggables[0].x, self.draggables[0].y, self.draggables[1].x, self.draggables[1].y))
         for d in range(1, len(self.draggables)-1):
-            self.lines.append(paint.create_line(self.draggables[d].x, self.draggables[d].y, self.draggables[d+1].x, self.draggables[d+1].y))
+            self.lines.append(canvas.create_line(self.draggables[d].x, self.draggables[d].y, self.draggables[d+1].x, self.draggables[d+1].y))
 
-        self.attackD = paint.create_text(300,10,fill="darkblue",font="Times 12",
+        self.attackD = canvas.create_text(300,10,fill="darkblue",font="Times 12",
                                 text="Attack: ")
-        self.decayD = paint.create_text(300,25,fill="darkblue",font="Times 12",
+        self.decayD = canvas.create_text(300,25,fill="darkblue",font="Times 12",
                                 text="Decay: ")
-        self.sustainD = paint.create_text(300,40,fill="darkblue",font="Times 12",
+        self.sustainD = canvas.create_text(300,40,fill="darkblue",font="Times 12",
                                 text="Sustain: ")
-        self.releaseD = paint.create_text(300,55,fill="darkblue",font="Times 12",
+        self.releaseD = canvas.create_text(300,55,fill="darkblue",font="Times 12",
                                 text="Release: ")
         
     def draw(self):
         global draggables
         global lines
-        paint.itemconfig(self.attackD, text="Attack: "+str(self.draggables[1].valueX))
-        paint.itemconfig(self.decayD, text="Decay: "+str(self.draggables[2].valueX))
-        paint.itemconfig(self.sustainD, text="Sustain: "+str(self.draggables[2].valueY))
-        paint.itemconfig(self.releaseD, text="Release: "+str(self.draggables[4].valueX))
-        paint.coords(self.lines[0], self.draggables[0].x, self.draggables[0].y, self.draggables[1].x, self.draggables[1].y)
+        self.canvas.itemconfig(self.attackD, text="Attack: "+str(self.draggables[1].valueX))
+        self.canvas.itemconfig(self.decayD, text="Decay: "+str(self.draggables[2].valueX))
+        self.canvas.itemconfig(self.sustainD, text="Sustain: "+str(self.draggables[2].valueY))
+        self.canvas.itemconfig(self.releaseD, text="Release: "+str(self.draggables[4].valueX))
+        self.canvas.coords(self.lines[0], self.draggables[0].x, self.draggables[0].y, self.draggables[1].x, self.draggables[1].y)
         for d in range(1, len(self.draggables)-1):
             paint.coords(self.lines[d], self.draggables[d].x, self.draggables[d].y, self.draggables[d+1].x, self.draggables[d+1].y)
         for a in self.draggables:
@@ -158,8 +160,12 @@ class envelope:
     def releasedD(self, event): 
         for a in self.draggables:
             a.releasedD(event)
-            
-volumeEnvelope = envelope()
+
+
+root = Tk()
+paint = Canvas(root)  
+volumeEnvelope = envelope(paint)
+
 
 def drawEverything():
     global volumeEnvelope
