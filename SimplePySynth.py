@@ -66,7 +66,6 @@ root = Tk()
 paint = Canvas(root)  
 volumeEnvelope = envelope(paint)
 
-
 def drawEverything():
     global volumeEnvelope
     volumeEnvelope.draw()
@@ -101,7 +100,7 @@ def GUIupdate():
         root.update()
         
 def playNotes():
-    for k in range(0, 5):
+    for k in range(0, 3):
         for j in notes:
             #playNote("saw", j, 1, 0.5, 0.5, 1, 0.5)
             playNote("saw", j, 1, volumeEnvelope.currentA, volumeEnvelope.currentD, volumeEnvelope.currentS, volumeEnvelope.currentR)
