@@ -2,6 +2,7 @@ import numpy as np
 import simpleaudio as sa
 from envelope import envelope
 from tkinter import Tk, Canvas
+import threading
 
 fs = 44100  # 44100 samples per second
 
@@ -94,9 +95,18 @@ paint.bind("<ButtonRelease-1>", released)
 paint.bind("<B1-Motion>", moving)
 paint.pack()
 
-while True:
-    for j in notes:
+def GUIupdate():
+    while True:
         drawEverything()
         root.update()
+        
+def playNotes():     
+    for j in notes:
         playNote("saw", j, 1, 0.5, 0.5, 1, 0.5)
+        
+while True:
+    t2 = threading.Thread(target=playNotes, args=()) 
+    t2.start()
+    GUIupdate()
+  
     
