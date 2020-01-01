@@ -1,6 +1,6 @@
 # SimplePySynth
 Building a simple additive synthesizer using Python. GUI with Tkinter.
-No user input yet, just a sequencer.
+No MIDI/keyboard input yet, just a sequencer.
 
 # Prerequisites
 pip install numpy\
