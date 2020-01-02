@@ -14,9 +14,7 @@ class dial:
         self.mix = 0
         self.miy = 0
         self.value = 0
-        self.initialValue = self.value;
-
-        
+        self.initialValue = self.value;      
         self.circle = canvas.create_oval(0, 0, 0, 0)
         self.line = canvas.create_line(x, y, x+10, y+10)
         self.label = canvas.create_text(x, y+radius+10, text=label)
@@ -44,5 +42,4 @@ class dial:
         angle = (self.value * 3) + 125
         angle = angle * (math.pi / 180)
         self.canvas.coords(self.line, self.x, self.y, self.x+math.cos(angle)*self.radius, self.y+math.sin(angle)*self.radius)
-
 
