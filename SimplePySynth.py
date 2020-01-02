@@ -2,6 +2,7 @@ import numpy as np
 import simpleaudio as sa
 from envelope import envelope
 from dial import dial
+from box import radioBox
 from tkinter import Tk, Canvas
 import matplotlib.pyplot as plt
 import threading
@@ -73,12 +74,13 @@ notes = [440, 880, 440, 220]
 root = Tk()
 paint = Canvas(root)  
 volumeEnvelope = envelope(paint)
-masterVolume = dial(paint, 350, 150, 20)
-
+masterVolume = dial(paint, 350, 150, 20, "Volume")
+waveType = radioBox(paint, 55, 10, 20, ["Sine: ", "Square: ", "Saw: "], ["sin", "square", "saw"])
 def drawEverything():
     global volumeEnvelope
     volumeEnvelope.draw()
     masterVolume.drawD()
+    waveType.drawD()
 
 def key(event):
     repr(event.char)
@@ -88,6 +90,7 @@ def callback(event):
     drawEverything()
     volumeEnvelope.clickedD(event)
     masterVolume.clickedD(event)
+    waveType.clickedD(event)
 
 def moving(event):
     global volumeEnvelope
@@ -117,7 +120,7 @@ def playNotes():
         for j in notes:
             #playNote("saw", j, 1, 0.5, 0.5, 1, 0.5)
             #print(masterVolume.value/100)
-            playNote("saw", j, 1, masterVolume.value, volumeEnvelope.currentA, volumeEnvelope.currentD, 0.1, volumeEnvelope.currentR)
+            playNote(waveType.value, j, 1, masterVolume.value, volumeEnvelope.currentA, volumeEnvelope.currentD, 0.1, volumeEnvelope.currentR)
 
 
 while True:
