@@ -1,5 +1,5 @@
 # SimplePySynth
-Building a simple additive synthesizer using Python. GUI with Tkinter.
+A monophonic additive synthesizer. GUI with Tkinter.\
 No MIDI/keyboard input yet, just a sequencer.
 
 # Prerequisites
