@@ -72,6 +72,7 @@ def playNote(wavetype, frequency, seconds, volume, attack, decay, sustain, relea
 notes = [440, 880, 440, 220]
 
 root = Tk()
+root.title( "SimplePySynth" )
 paint = Canvas(root)  
 volumeEnvelope = envelope(paint)
 masterVolume = dial(paint, 350, 150, 20, "Volume")
